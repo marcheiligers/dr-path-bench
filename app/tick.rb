@@ -26,9 +26,24 @@ def tick args
                          greedy.find_path(SOURCE, TARGET, Maps::MAP1)
                          puts greedy.main_loop_count
                        },
-                       greedy_path_tile: -> () {
-                         greedy = GreedyPathTile.new
-                         greedy.find_path(PathTile.new(SOURCE[0], SOURCE[1]), PathTile.new(TARGET[0], TARGET[1]), Maps::MAP1)
+                       # greedy_path_tile: -> () {
+                       #   greedy = GreedyPathTile.new
+                       #   greedy.find_path(PathTile.new(SOURCE[0], SOURCE[1]), PathTile.new(TARGET[0], TARGET[1]), Maps::MAP1)
+                       #   puts greedy.main_loop_count
+                       # },
+                       # greedy_sort_bang_new_concat: -> () {
+                       #   greedy = GreedySortBangNewConcat.new
+                       #   greedy.find_path(SOURCE, TARGET, Maps::MAP1)
+                       #   puts greedy.main_loop_count
+                       # },
+                       greedy_sort_bang_precalc_heuristic: -> () {
+                         greedy = GreedySortBangPrecalcHeuristic.new
+                         greedy.find_path(SOURCE, TARGET, Maps::MAP1)
+                         puts greedy.main_loop_count
+                       },
+                       greedy_merge_sort_precalc_heuristic: -> () {
+                         greedy = GreedyMergeSortPrecalcHeuristic.new
+                         greedy.find_path(SOURCE, TARGET, Maps::MAP1)
                          puts greedy.main_loop_count
                        }
   end
@@ -47,6 +62,21 @@ def tick args
 
     puts :greedy_sort_bang
     greedy = GreedySortBang.new
+    puts greedy.find_path(SOURCE, TARGET, Maps::MAP1)
+    puts greedy.main_loop_count
+
+    # puts :greedy_sort_bang_new_concat
+    # greedy = GreedySortBangNewConcat.new
+    # puts greedy.find_path(SOURCE, TARGET, Maps::MAP1)
+    # puts greedy.main_loop_count
+
+    puts :greedy_sort_bang_precalc_heuristic
+    greedy = GreedySortBangPrecalcHeuristic.new
+    puts greedy.find_path(SOURCE, TARGET, Maps::MAP1)
+    puts greedy.main_loop_count
+
+    puts :greedy_merge_sort_precalc_heuristic
+    greedy = GreedyMergeSortPrecalcHeuristic.new
     puts greedy.find_path(SOURCE, TARGET, Maps::MAP1)
     puts greedy.main_loop_count
   end
