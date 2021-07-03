@@ -14,16 +14,19 @@ On my ancient MacBook Pro (Retina, 15-inch, Early 2013), 2.7 GHz Quad-Core Intel
 
 ```bash
 * BENCHMARK:
-** Fastest: :greedy_merge_sort_precalc_heuristic
-** Second:  :greedy_sort_bang_precalc_heuristic
-** Margin:  41% (224ms) 435ms vs 659ms.
+** Fastest: :greedy_merge_sort_precalc_heuristic_new_concat
+** Second:  :greedy_merge_sort_precalc_heuristic
+** Margin:  102% (280ms) 135ms vs 415ms.
 ** Times:
-*** greedy_merge_sort_precalc_heuristic: 435ms (0% 0ms).
-*** greedy_sort_bang_precalc_heuristic: 659ms (40% 224ms).
-*** greedy_merge_sort: 765ms (55% 330ms).
-*** greedy_sort_bang: 1014ms (79% 580ms).
-*** greedy_standard: 1901ms (125% 1466ms).
+*** greedy_merge_sort_precalc_heuristic_new_concat: 135ms (0% 0ms).
+*** greedy_merge_sort_precalc_heuristic: 415ms (101% 280ms).
+*** greedy_merge_sort_precalc_heuristic_elm_ref: 436ms (105% 301ms).
+*** greedy_sort_bang_new_concat: 643ms (130% 508ms).
+*** greedy_sort_bang_precalc_heuristic: 655ms (131% 520ms).
+*** greedy_merge_sort: 767ms (140% 632ms).
+*** greedy_sort_bang: 998ms (152% 863ms).
+*** greedy_standard: 1842ms (172% 1707ms).
 ```
 
-That means the pure Ruby `merge_sort` is faster than even the built in `sort!`, and precalculating the heuristic function instead of calculating in the sort improves the performance by another 40%. It should be noted that the merge sort version goes through the main loop fewer times for these starting conditions (58 times vs 68 times), though the resulting paths are identical. Different starting conditions may have differing results.
+That means the pure Ruby `merge_sort` is faster than even the built in `sort!`, and precalculating the heuristic function instead of calculating in the sort improves the performance by another chunck, and selectively sorting even more. It should be noted that the merge sort version goes through the main loop fewer times for these starting conditions (58 times vs 68 times), though the resulting paths are identical. Different starting conditions may have differing results.
 

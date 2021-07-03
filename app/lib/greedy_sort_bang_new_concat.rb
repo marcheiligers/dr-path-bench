@@ -45,16 +45,23 @@ class GreedySortBangNewConcat
         # That have not been visited and are not walls
         unless came_from.has_key?(neighbor) || map[neighbor[1]][neighbor[0]] != '.'
           # Add them to the frontier and mark them as visited
-          frontier << neighbor
+          # frontier << neighbor
           came_from[neighbor] = new_frontier
         end
       end
 
       # Sort the frontier so cells that are close to the target are then prioritized
-      # frontier = frontier.sort_by { |cell| (target_x - cell[0]).abs + (target_y - cell[1]).abs }
-      new_neighbors.sort! { |c1, c2| ((target_x - c1[0]).abs + (target_y - c1[1]).abs) <=> ((target_x - c2[0]).abs + (target_y - c2[1]).abs)  }
-      frontier = new_neighbors.concat(frontier)
-      # @frontier = merge_sort(@frontier, target_x, target_y)
+      # puts "frontier #{frontier.inspect}"
+      # puts "new_neighbors #{new_neighbors.inspect}"
+      if new_neighbors.length == 0
+        # Nothing to do here
+      elsif frontier.length > 0 && ((target_x - new_neighbors[0][0]).abs + (target_y - new_neighbors[0][1]).abs) <= ((target_x - frontier[0][0]).abs + (target_y - frontier[0][1]).abs)
+        new_neighbors.sort! { |c1, c2| ((target_x - c1[0]).abs + (target_y - c1[1]).abs) <=> ((target_x - c2[0]).abs + (target_y - c2[1]).abs)  }
+        frontier = new_neighbors.concat(frontier)
+      else
+        frontier = new_neighbors.concat(frontier)
+        frontier.sort! { |c1, c2| ((target_x - c1[0]).abs + (target_y - c1[1]).abs) <=> ((target_x - c2[0]).abs + (target_y - c2[1]).abs)  }
+      end
     end
 
     # If the search found the target

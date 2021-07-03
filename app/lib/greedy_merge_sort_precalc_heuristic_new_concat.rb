@@ -1,4 +1,4 @@
-class GreedyMergeSortPrecalcHeuristic
+class GreedyMergeSortPrecalcHeuristicNewConcat
   include MergeSortPrecalcHeuristic
 
   attr_reader :main_loop_count
@@ -43,28 +43,24 @@ class GreedyMergeSortPrecalcHeuristic
       adjacent_neighbors << [nfx + 1, nfy    , (target_x - nfx - 1).abs + (target_y - nfy).abs] unless nfx == max_x
       adjacent_neighbors << [nfx + 1, nfy - 1, (target_x - nfx - 1).abs + (target_y - nfy + 1).abs] unless nfx == max_x || nfy == 0
 
-      found = false
-      # For each of its neighbors
-      # adjacent_neighbors(new_frontier).each do |neighbor|
-      adjacent_neighbors.each do |neighbor|
-        # Precalc the heuristic function
-        # neighbor << (target_x - neighbor[0]).abs + (target_y - neighbor[1]).abs
-
+      new_neighbors = adjacent_neighbors.select do |neighbor|
         # That have not been visited and are not walls
         unless came_from.has_key?(neighbor) || map[neighbor[1]][neighbor[0]] != '.'
           # Add them to the frontier and mark them as visited
-          frontier.unshift(neighbor)
+          # frontier << neighbor
           came_from[neighbor] = new_frontier
-          found = true
         end
       end
 
-      # puts frontier.inspect
-
       # Sort the frontier so cells that are close to the target are then prioritized
-      # puts "before sort: #{frontier.map(&:last).inspect}"
-      frontier = merge_sort(frontier) if found
-      # puts "after sort: #{frontier.map(&:last).inspect}"
+      if new_neighbors.length > 0
+        new_neighbors = merge_sort(new_neighbors)
+        if frontier.length > 0 && new_neighbors[0][2] > frontier[0][2]
+          frontier = merge_sort(new_neighbors.concat(frontier))
+        else
+          frontier = new_neighbors.concat(frontier)
+        end
+      end
     end
 
     # If the search found the target

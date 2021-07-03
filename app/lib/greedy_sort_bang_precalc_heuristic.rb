@@ -15,11 +15,11 @@ class GreedySortBangPrecalcHeuristic
     # Sets up the search to begin from the source
     source = source.dup.push((target_x - source[0]).abs + (target_y - source[1]).abs)
     came_from = {}
-    came_from[source] = nil
+    came_from[source] = true
     frontier  = [source]
 
     # Until the target is found or there are no more cells to explore from
-    until came_from.has_key?(target) || frontier.empty?
+    until came_from[target] || frontier.empty?
       @main_loop_count += 1
 
       # Take the next frontier cell
@@ -49,7 +49,7 @@ class GreedySortBangPrecalcHeuristic
         # neighbor << (target_x - neighbor[0]).abs + (target_y - neighbor[1]).abs
 
         # That have not been visited and are not walls
-        unless came_from.has_key?(neighbor) || map[neighbor[1]][neighbor[0]] != '.'
+        unless came_from[neighbor] || map[neighbor[1]][neighbor[0]] != '.'
           # Add them to the frontier and mark them as visited
           frontier << neighbor
           came_from[neighbor] = new_frontier
@@ -65,12 +65,12 @@ class GreedySortBangPrecalcHeuristic
     end
 
     # If the search found the target
-    if came_from.has_key?(target)
+    if came_from[target]
       # Calculates the path between the target and star for the greedy search
       # Only called when the greedy search finds the target
       path = []
       next_endpoint = came_from[target]
-      while next_endpoint
+      while next_endpoint != true
         path << [next_endpoint[0], next_endpoint[1]]
         next_endpoint = came_from[next_endpoint]
       end
