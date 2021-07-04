@@ -1,19 +1,24 @@
-class GreedySortBangNewConcat
+class GreedyMergeSortIterativePrecalcHeuristicNewConcat
+  include MergeSortIterativePrecalcHeuristic
+
   attr_reader :main_loop_count
 
   # source and target are simple points [x, y], map is an array of arrays where '.' is walkable, and anything else is not
   def find_path(source, target, map)
-    came_from = {}
-    frontier  = [source]
-
-      # Sets up the search to begin from the source
-    came_from[source] = nil
     @main_loop_count = 0
 
     max_y = map.size - 1
     max_x = map[0].size - 1
     target_x = target[0]
     target_y = target[1]
+    # target heuristic is 0
+    target = [target_x, target_y, 0]
+
+    # Sets up the search to begin from the source
+    source = source.dup.push((target_x - source[0]).abs + (target_y - source[1]).abs)
+    came_from = {}
+    came_from[source] = nil
+    frontier  = [source]
 
     # Until the target is found or there are no more cells to explore from
     until came_from.has_key?(target) || frontier.empty?
@@ -29,18 +34,15 @@ class GreedySortBangNewConcat
       # From southern neighbor, clockwise
       nfx = new_frontier[0]
       nfy = new_frontier[1]
-      adjacent_neighbors << [nfx    , nfy - 1] unless nfy == 0
-      adjacent_neighbors << [nfx - 1, nfy    ] unless nfx == 0
-      adjacent_neighbors << [nfx    , nfy + 1] unless nfy == max_y
-      adjacent_neighbors << [nfx + 1, nfy    ] unless nfx == max_x
+      adjacent_neighbors << [nfx    , nfy - 1, (target_x - nfx).abs + (target_y - nfy + 1).abs] unless nfy == 0
+      adjacent_neighbors << [nfx - 1, nfy - 1, (target_x - nfx + 1).abs + (target_y - nfy + 1).abs] unless nfx == 0 || nfy == 0
+      adjacent_neighbors << [nfx - 1, nfy    , (target_x - nfx + 1).abs + (target_y - nfy).abs] unless nfx == 0
+      adjacent_neighbors << [nfx - 1, nfy + 1, (target_x - nfx + 1).abs + (target_y - nfy - 1).abs] unless nfx == 0 || nfy == max_y
+      adjacent_neighbors << [nfx    , nfy + 1, (target_x - nfx).abs + (target_y - nfy - 1).abs] unless nfy == max_y
+      adjacent_neighbors << [nfx + 1, nfy + 1, (target_x - nfx - 1).abs + (target_y - nfy - 1).abs] unless nfx == max_x || nfy == max_y
+      adjacent_neighbors << [nfx + 1, nfy    , (target_x - nfx - 1).abs + (target_y - nfy).abs] unless nfx == max_x
+      adjacent_neighbors << [nfx + 1, nfy - 1, (target_x - nfx - 1).abs + (target_y - nfy + 1).abs] unless nfx == max_x || nfy == 0
 
-      adjacent_neighbors << [nfx - 1, nfy - 1] unless nfx == 0 || nfy == 0
-      adjacent_neighbors << [nfx - 1, nfy + 1] unless nfx == 0 || nfy == max_y
-      adjacent_neighbors << [nfx + 1, nfy + 1] unless nfx == max_x || nfy == max_y
-      adjacent_neighbors << [nfx + 1, nfy - 1] unless nfx == max_x || nfy == 0
-
-      # For each of its neighbors
-      # adjacent_neighbors(new_frontier).each do |neighbor|
       new_neighbors = adjacent_neighbors.select do |neighbor|
         # That have not been visited and are not walls
         unless came_from.has_key?(neighbor) || map[neighbor[1]][neighbor[0]] != '.'
@@ -51,16 +53,10 @@ class GreedySortBangNewConcat
       end
 
       # Sort the frontier so cells that are close to the target are then prioritized
-      # puts "frontier #{frontier.inspect}"
-      # puts "new_neighbors #{new_neighbors.inspect}"
-      if new_neighbors.length == 0
-        # Nothing to do here
-      elsif frontier.length > 0 && ((target_x - new_neighbors[0][0]).abs + (target_y - new_neighbors[0][1]).abs) < ((target_x - frontier[0][0]).abs + (target_y - frontier[0][1]).abs)
-        new_neighbors.sort! { |c1, c2| ((target_x - c1[0]).abs + (target_y - c1[1]).abs) <=> ((target_x - c2[0]).abs + (target_y - c2[1]).abs)  }
+      if new_neighbors.length > 0
+        merge_sort!(new_neighbors)
         frontier = new_neighbors.concat(frontier)
-      else
-        frontier = new_neighbors.concat(frontier)
-        frontier.sort! { |c1, c2| ((target_x - c1[0]).abs + (target_y - c1[1]).abs) <=> ((target_x - c2[0]).abs + (target_y - c2[1]).abs)  }
+        merge_sort!(frontier) if frontier.length > 0 && new_neighbors[0][2] >= frontier[0][2]
       end
     end
 
@@ -71,7 +67,7 @@ class GreedySortBangNewConcat
       path = []
       next_endpoint = came_from[target]
       while next_endpoint
-        path << next_endpoint
+        path << [next_endpoint[0], next_endpoint[1]]
         next_endpoint = came_from[next_endpoint]
       end
       path

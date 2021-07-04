@@ -1,9 +1,9 @@
 # Original test cases
-# TARGET = [31, 31]
+SOURCE = [31, 31]
 TARGET = [20, 11]
 
 # SOURCE = [20, 11]
-SOURCE = [31, 31]
+# TARGET = [31, 31]
 
 # Concats have longer path path
 # SOURCE = [1, 20]
@@ -14,6 +14,9 @@ SOURCE = [31, 31]
 
 # SOURCE = [13, 4]
 # TARGET = [21, 45]
+
+# SOURCE = [35, 5]
+# TARGET = [17, 34]
 
 # Super slow for all but greedy_merge_sort_precalc_heuristic_new_concat
 # SOURCE = [7, 29]
@@ -59,9 +62,10 @@ def bench(source, target, args)
     greedy_sort_bang_new_concat: -> () { GreedySortBangNewConcat.new.find_path(source, target, Maps::MAP1) },
     greedy_sort_bang_precalc_heuristic: -> () { GreedySortBangPrecalcHeuristic.new.find_path(source, target, Maps::MAP1) },
     greedy_merge_sort_precalc_heuristic: -> () { GreedyMergeSortPrecalcHeuristic.new.find_path(source, target, Maps::MAP1) },
+    # greedy_heap_sort_precalc_heuristic: -> () { GreedyHeapSortPrecalcHeuristic.new.find_path(source, target, Maps::MAP1) },
     greedy_merge_sort_precalc_heuristic_elm_ref: -> () { GreedyMergeSortPrecalcHeuristicElmRef.new.find_path(source, target, Maps::MAP1) },
     greedy_merge_sort_precalc_heuristic_new_concat: -> () { GreedyMergeSortPrecalcHeuristicNewConcat.new.find_path(source, target, Maps::MAP1) },
-    greedy_merge_sort_inline_precalc_heuristic_new_concat: -> () { GreedyMergeSortInlinePrecalcHeuristicNewConcat.new.find_path(source, target, Maps::MAP1) }
+    greedy_merge_sort_iterative_precalc_heuristic_new_concat: -> () { GreedyMergeSortIterativePrecalcHeuristicNewConcat.new.find_path(source, target, Maps::MAP1) }
   )
 end
 
@@ -96,6 +100,11 @@ def paths(source, target, args)
   puts greedy.find_path(source, target, Maps::MAP1)
   puts greedy.main_loop_count
 
+  # puts :greedy_heap_sort_precalc_heuristic
+  # greedy = GreedyHeapSortPrecalcHeuristic.new
+  # puts greedy.find_path(source, target, Maps::MAP1)
+  # puts greedy.main_loop_count
+
   puts :greedy_merge_sort_precalc_heuristic_elm_ref
   greedy = GreedyMergeSortPrecalcHeuristicElmRef.new
   puts greedy.find_path(source, target, Maps::MAP1)
@@ -106,8 +115,8 @@ def paths(source, target, args)
   puts greedy.find_path(source, target, Maps::MAP1)
   puts greedy.main_loop_count
 
-  puts :greedy_merge_sort_inline_precalc_heuristic_new_concat
-  greedy = GreedyMergeSortInlinePrecalcHeuristicNewConcat.new
+  puts :greedy_merge_sort_iterative_precalc_heuristic_new_concat
+  greedy = GreedyMergeSortIterativePrecalcHeuristicNewConcat.new
   puts greedy.find_path(source, target, Maps::MAP1)
   puts greedy.main_loop_count
 

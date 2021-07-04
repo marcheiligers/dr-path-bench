@@ -55,7 +55,7 @@ class GreedyMergeSortPrecalcHeuristicNewConcat
       # Sort the frontier so cells that are close to the target are then prioritized
       if new_neighbors.length > 0
         new_neighbors = merge_sort(new_neighbors)
-        if frontier.length > 0 && new_neighbors[0][2] > frontier[0][2]
+        if frontier.length > 0 && new_neighbors[0][2] >= frontier[0][2]
           frontier = merge_sort(new_neighbors.concat(frontier))
         else
           frontier = new_neighbors.concat(frontier)
