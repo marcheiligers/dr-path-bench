@@ -12,17 +12,32 @@ SOURCE = [31, 31]
 # SOURCE = [40, 40]
 # TARGET = [32, 12]
 
+# SOURCE = [13, 4]
+# TARGET = [21, 45]
+
 # Super slow for all but greedy_merge_sort_precalc_heuristic_new_concat
 # SOURCE = [7, 29]
 # TARGET = [46, 6]
 
+# SOURCE = [47, 22]
+# TARGET = [40, 2]
+
 def tick args
-  args.outputs.labels << [100, 120, "Press R to run bench with random source and target"]
+  source = SOURCE
+  target = TARGET
+
+  args.outputs.labels << [100, 140, "Press R to run bench with random source and target"]
+  args.outputs.labels << [100, 120, "Press S to run bench with the same source and target as previous"]
   args.outputs.labels << [100, 100, "Press O to run bench with original test case"]
 
   if args.inputs.keyboard.key_down.r
     source = safe_point
     target = safe_point(source)
+    bench(source, target, args)
+    paths(source, target, args)
+  end
+
+  if args.inputs.keyboard.key_down.s
     bench(source, target, args)
     paths(source, target, args)
   end
@@ -35,16 +50,19 @@ end
 
 def bench(source, target, args)
   args.gtk.console.show
-  args.gtk.benchmark iterations: 10, # number of iterations
-                     greedy_standard: -> () { GreedyStandard.new.find_path(source, target, Maps::MAP1) },
-                     greedy_merge_sort: -> () { GreedyMergeSort.new.find_path(source, target, Maps::MAP1) },
-                     greedy_sort_bang: -> () { GreedySortBang.new.find_path(source, target, Maps::MAP1) },
-                     # greedy_path_tile: -> () { GreedyPathTile.new.find_path(PathTile.new(SOURCE[0], SOURCE[1]), PathTile.new(TARGET[0], TARGET[1]), Maps::MAP1) },
-                     greedy_sort_bang_new_concat: -> () { GreedySortBangNewConcat.new.find_path(source, target, Maps::MAP1) },
-                     greedy_sort_bang_precalc_heuristic: -> () { GreedySortBangPrecalcHeuristic.new.find_path(source, target, Maps::MAP1) },
-                     greedy_merge_sort_precalc_heuristic: -> () { GreedyMergeSortPrecalcHeuristic.new.find_path(source, target, Maps::MAP1) },
-                     greedy_merge_sort_precalc_heuristic_elm_ref: -> () { GreedyMergeSortPrecalcHeuristicElmRef.new.find_path(source, target, Maps::MAP1) },
-                     greedy_merge_sort_precalc_heuristic_new_concat: -> () { GreedyMergeSortPrecalcHeuristicNewConcat.new.find_path(source, target, Maps::MAP1) }
+  args.gtk.benchmark(
+    iterations: 10, # number of iterations
+    greedy_standard: -> () { GreedyStandard.new.find_path(source, target, Maps::MAP1) },
+    greedy_merge_sort: -> () { GreedyMergeSort.new.find_path(source, target, Maps::MAP1) },
+    greedy_sort_bang: -> () { GreedySortBang.new.find_path(source, target, Maps::MAP1) },
+    # greedy_path_tile: -> () { GreedyPathTile.new.find_path(PathTile.new(SOURCE[0], SOURCE[1]), PathTile.new(TARGET[0], TARGET[1]), Maps::MAP1) },
+    greedy_sort_bang_new_concat: -> () { GreedySortBangNewConcat.new.find_path(source, target, Maps::MAP1) },
+    greedy_sort_bang_precalc_heuristic: -> () { GreedySortBangPrecalcHeuristic.new.find_path(source, target, Maps::MAP1) },
+    greedy_merge_sort_precalc_heuristic: -> () { GreedyMergeSortPrecalcHeuristic.new.find_path(source, target, Maps::MAP1) },
+    greedy_merge_sort_precalc_heuristic_elm_ref: -> () { GreedyMergeSortPrecalcHeuristicElmRef.new.find_path(source, target, Maps::MAP1) },
+    greedy_merge_sort_precalc_heuristic_new_concat: -> () { GreedyMergeSortPrecalcHeuristicNewConcat.new.find_path(source, target, Maps::MAP1) },
+    greedy_merge_sort_inline_precalc_heuristic_new_concat: -> () { GreedyMergeSortInlinePrecalcHeuristicNewConcat.new.find_path(source, target, Maps::MAP1) }
+  )
 end
 
 def paths(source, target, args)
@@ -85,6 +103,11 @@ def paths(source, target, args)
 
   puts :greedy_merge_sort_precalc_heuristic_new_concat
   greedy = GreedyMergeSortPrecalcHeuristicNewConcat.new
+  puts greedy.find_path(source, target, Maps::MAP1)
+  puts greedy.main_loop_count
+
+  puts :greedy_merge_sort_inline_precalc_heuristic_new_concat
+  greedy = GreedyMergeSortInlinePrecalcHeuristicNewConcat.new
   puts greedy.find_path(source, target, Maps::MAP1)
   puts greedy.main_loop_count
 
